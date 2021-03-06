@@ -16,20 +16,20 @@ export const generateToken = (user) => {
 };
 
 export const isAuth = (req, res, next) => {
-  console.log("utils.js isAuth 1");
+  //console.log("utils.js isAuth 1");
   const authorization = req.headers.authorization;
   if (authorization) {
-    console.log("utils.js isAuth 2");
+   // console.log("utils.js isAuth 2");
     const token = authorization.slice(7, authorization.length); // Bearer XXXXXX
     jwt.verify(
       token,
       process.env.JWT_SECRET || "somethingsecret",
       (err, decode) => {
         if (err) {
-          console.log("utils.js isAuth 3");
+         // console.log("utils.js isAuth 3");
           res.status(401).send({ message: "Invalid Token" });
         } else {
-          console.log("utils.js isAuth 4");
+         // console.log("utils.js isAuth 4");
           req.user = decode;
           next();
         }
