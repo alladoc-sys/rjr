@@ -108,7 +108,7 @@ export default function ProductEditScreen(props) {
                 onChange={(e) => setName(e.target.value)}
               ></input>
             </div>
-            <div>
+            {/* <div>
               <label htmlFor="price">Price</label>
               <input
                 id="price"
@@ -117,8 +117,8 @@ export default function ProductEditScreen(props) {
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
               ></input>
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <label htmlFor="image">Image</label>
               <input
                 id="image"
@@ -127,7 +127,7 @@ export default function ProductEditScreen(props) {
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
               ></input>
-            </div>
+            </div> */}
             <div>
               <label htmlFor="imageFile">Image File</label>
               <input

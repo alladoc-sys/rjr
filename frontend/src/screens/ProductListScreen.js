@@ -40,7 +40,7 @@ export default function ProductListScreen(props) {
     if (successDelete) {
       dispatch({ type: PRODUCT_DELETE_RESET });
     }
-    dispatch(listProducts());
+    dispatch(listProducts({ name: "", category: "" }));
   }, [createdProduct, dispatch, props.history, successCreate, successDelete]);
   const deleteHandler = (product) => {
     if (window.confirm("Are you sure to delete?")) {
@@ -48,7 +48,8 @@ export default function ProductListScreen(props) {
     }
   };
   const createHandler = () => {
-    dispatch(createProduct());
+    //dispatch(createProduct());
+    props.history.push("/productListUpdate/create");
   };
   return (
     <div>

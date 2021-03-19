@@ -15,31 +15,50 @@ import {
   PRODUCT_DELETE_REQUEST,
   PRODUCT_DELETE_SUCCESS,
   PRODUCT_DELETE_FAIL,
+  PRODUCT_CATEGORY_LIST_SUCCESS,
+  PRODUCT_CATEGORY_LIST_FAIL,
+  PRODUCT_CATEGORY_LIST_REQUEST,
 } from "../constants/productConstants";
 
-export const listProducts = () => async (dispatch) => {
+export const listProducts = ({ name = "", category = "" }) => async (
+  dispatch
+) => {
   dispatch({
     type: PRODUCT_LIST_REQUEST,
   });
   try {
-    const { data } = await Axios.get("/api/products");
+    const { data } = await Axios.get(
+      `/api/products?name=${name}&category=${category}`
+    );
     dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
   } catch (error) {
     dispatch({ type: PRODUCT_LIST_FAIL, payload: error });
   }
 };
 
-export const listProductBrand = (brand) => async (dispatch) => {
+export const listProductsCategories = () => async (dispatch) => {
   dispatch({
-    type: PRODUCT_LIST_REQUEST,
+    type: PRODUCT_CATEGORY_LIST_REQUEST,
   });
   try {
-    const { data } = await Axios.get(`/api/product/brand/${brand}`);
-    dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+    const { data } = await Axios.get(`/api/products/categories`);
+    dispatch({ type: PRODUCT_CATEGORY_LIST_SUCCESS, payload: data });
   } catch (error) {
-    dispatch({ type: PRODUCT_LIST_FAIL, payload: error });
+    dispatch({ type: PRODUCT_CATEGORY_LIST_FAIL, payload: error });
   }
 };
+
+// export const listProductBrand = (brand) => async (dispatch) => {
+//   dispatch({
+//     type: PRODUCT_LIST_REQUEST,
+//   });
+//   try {
+//     const { data } = await Axios.get(`/api/product/brand/${brand}`);
+//     dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
+//   } catch (error) {
+//     dispatch({ type: PRODUCT_LIST_FAIL, payload: error });
+//   }
+// };
 
 export const detailsProduct = (productId) => async (dispatch) => {
   dispatch({ type: PRODUCT_DETAILS_REQUEST, payload: productId });
@@ -57,28 +76,32 @@ export const detailsProduct = (productId) => async (dispatch) => {
   }
 };
 
-export const createProduct = () => async (dispatch, getState) => {
-  console.log("productAction.js createProduct 1");
+export const createProduct = (product) => async (dispatch, getState) => {
+  console.log("productAction.js createProduct 1:::" + product.name);
   dispatch({ type: PRODUCT_CREATE_REQUEST });
+  console.log("productAction.js createProduct 2:::" + product.category);
   const {
     userSignin: { userInfo },
   } = getState();
+  // const product = {
+  //   name: name,
+  //   image: image,
+  //   category: category,
+  //   description: description,
+  // };
+  console.log("productAction.js createProduct 3"); //name, image, category, description
   try {
-    const { data } = await Axios.post(
-      "/api/products",
-      {},
-      {
-        headers: { Authorization: `Bearer ${userInfo.token}` },
-      }
-    );
-    console.log("productAction.js createProduct 2");
+    const { data } = await Axios.post("/api/products", product, {
+      headers: { Authorization: `Bearer ${userInfo.token}` },
+    });
+    console.log("productAction.js createProduct 4");
     dispatch({
       type: PRODUCT_CREATE_SUCCESS,
       payload: data.product,
     });
-    console.log("productAction.js createProduct 3");
+    console.log("productAction.js createProduct 5");
   } catch (error) {
-    console.log("productAction.js createProduct 4 error");
+    console.log("productAction.js createProduct 6 error");
     const message =
       error.response && error.response.data.message
         ? error.response.data.message

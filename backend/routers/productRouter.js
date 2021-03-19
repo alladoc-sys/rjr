@@ -9,8 +9,25 @@ const productRouter = express.Router();
 productRouter.get(
   "/",
   expressAsyncHandler(async (req, res) => {
-    const products = await Product.find({});
+    const name = req.query.name || "";
+    const category = req.query.category || "";
+    // const seller = req.query.seller || "";
+    // const sellerFilter = seller ? { seller } : {};
+    const nameFilter = name ? { name: { $regex: name, $options: "i" } } : {};
+    const categoryFilter = category ? { category } : {};
+    const products = await Product.find({
+      ...nameFilter,
+      ...categoryFilter,
+    }); //.populate("seller", "seller.name seller.logo");
     res.send(products);
+  })
+);
+
+productRouter.get(
+  "/categories",
+  expressAsyncHandler(async (req, res) => {
+    const categories = await Product.find().distinct("category");
+    res.send(categories);
   })
 );
 
@@ -41,15 +58,15 @@ productRouter.post(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const product = new Product({
-      name: "samle name " + Date.now(),
-      image: "/images/p1.jpg",
+      name: req.body.name + Date.now(),
+      image: req.body.image,
       price: 0,
-      category: "sample category",
+      category: req.body.category,
       brand: "sample brand",
       countInStock: 0,
       rating: 0,
       numReviews: 0,
-      description: "sample description",
+      description: req.body.description,
     });
     const createdProduct = await product.save();
     res.send({ message: "Product Created", product: createdProduct });
@@ -80,16 +97,16 @@ productRouter.put(
 );
 
 productRouter.delete(
-  '/:id',
+  "/:id",
   isAuth,
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (product) {
       const deleteProduct = await product.remove();
-      res.send({ message: 'Product Deleted', product: deleteProduct });
+      res.send({ message: "Product Deleted", product: deleteProduct });
     } else {
-      res.status(404).send({ message: 'Product Not Found' });
+      res.status(404).send({ message: "Product Not Found" });
     }
   })
 );
